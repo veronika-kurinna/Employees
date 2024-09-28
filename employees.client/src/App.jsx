@@ -2,30 +2,39 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-    const [forecasts, setForecasts] = useState();
+    const [employees, setEmployees] = useState();
+    const baseUrl = "https://localhost:7101";
 
     useEffect(() => {
-        populateWeatherData();
+        getEmployees()
+            .then(items => {
+                setEmployees(items);
+                console.log(items);
+            }); 
     }, []);
 
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
+    const contents = employees === undefined
+        ? <p><em>Loading...</em></p>
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Date Of Birth</th>
+                    <th>Married</th>
+                    <th>Phone</th>
+                    <th>Salary</th>
                 </tr>
             </thead>
             <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
+                {employees.map(employee =>
+                    <tr key={employee.id}>
+                        <td>{employee.id}</td>
+                        <td>{employee.name}</td>
+                        <td>{employee.dateOfBirth}</td>
+                        <td>{String(employee.married)}</td>
+                        <td>{employee.phone}</td>
+                        <td>{employee.salary}</td>
                     </tr>
                 )}
             </tbody>
@@ -33,16 +42,23 @@ function App() {
 
     return (
         <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
+            <h1 id="tableLabel">Employees</h1>
             {contents}
         </div>
     );
+
+    async function getEmployees() {
+        let request = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
     
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
+       return fetch(`${baseUrl}/api/Employee/Get`, request)
+            .then(response => response.json())
+            .then(response => response.employees)
+            .catch(error => console.log(error.message));
     }
 }
 
