@@ -1,4 +1,5 @@
 using Employees.Server.Dtos;
+using Employees.Server.Dtos.Requests;
 using Employees.Server.Dtos.Responses;
 using Employees.Server.Models;
 using Employees.Server.Services;
@@ -28,6 +29,25 @@ namespace Employees.Server.Controllers
             {
                 Employees = employeeDto
             };
+        }
+
+        [HttpPost]
+        public async Task CreateEmployees([FromBody] CreateEmployeesRequest request)
+        {
+            IEnumerable<Employee> employees = request.Employees.Select(employee => _mapper.MapToModel(employee));
+            await _service.CreateEmployees(employees);
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task Update(int id, UpdateEmployeeRequest request)
+        {
+            await _service.UpdateEmployee(id, request.Name, request.DateOfBirth, request.Married, request.Phone, request.Salary);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task Delete(int id)
+        {
+            await _service.DeleteEmployee(id);
         }
     }
 }
