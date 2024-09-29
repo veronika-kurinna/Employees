@@ -1,6 +1,6 @@
 @Employees.Server_HostAddress = http://localhost:5274
 
-GET {{Employees.Server_HostAddress}}/weatherforecast/
+GET {{Employees.Server_HostAddress}}/employees/
 Accept: application/json
 
 ###
